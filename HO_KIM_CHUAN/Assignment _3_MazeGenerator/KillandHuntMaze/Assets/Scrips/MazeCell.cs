@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MazeCell : MonoBehaviour
-{
-    public bool visited = false;
-    public GameObject DownWall;
+public class MazeCell {
+    public bool Visited = false;
     public GameObject UpWall;
+    public GameObject DownWall;
     public GameObject LeftWall;
     public GameObject RightWall;
-
 }

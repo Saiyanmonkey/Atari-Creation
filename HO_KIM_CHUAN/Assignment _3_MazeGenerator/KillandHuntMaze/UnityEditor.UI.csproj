@@ -289,7 +289,7 @@
  <HintPath>/Applications/Unity/Hub/Editor/2019.4.15f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll</HintPath>
  </Reference>
  <Reference Include="nunit.framework">
- <HintPath>/Users/rho/KillandHuntMaze/Library/PackageCache/com.unity.ext.nunit@1.0.0/net35/unity-custom/nunit.framework.dll</HintPath>
+ <HintPath>/Users/rho/Documents/Bachelor Degree/SEM7/WID3009 (AG)/Atari-Creation/HO_KIM_CHUAN/Assignment _3_MazeGenerator/KillandHuntMaze/Library/PackageCache/com.unity.ext.nunit@1.0.0/net35/unity-custom/nunit.framework.dll</HintPath>
  </Reference>
  <Reference Include="mscorlib">
  <HintPath>/Applications/Unity/Hub/Editor/2019.4.15f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
@@ -646,10 +646,10 @@
  <HintPath>/Applications/Unity/Hub/Editor/2019.4.15f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/unityscript/Boo.Lang.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.TestRunner">
- <HintPath>/Users/rho/KillandHuntMaze/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
+ <HintPath>/Users/rho/Documents/Bachelor Degree/SEM7/WID3009 (AG)/Atari-Creation/HO_KIM_CHUAN/Assignment _3_MazeGenerator/KillandHuntMaze/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.TestRunner">
- <HintPath>/Users/rho/KillandHuntMaze/Library/ScriptAssemblies/UnityEngine.TestRunner.dll</HintPath>
+ <HintPath>/Users/rho/Documents/Bachelor Degree/SEM7/WID3009 (AG)/Atari-Creation/HO_KIM_CHUAN/Assignment _3_MazeGenerator/KillandHuntMaze/Library/ScriptAssemblies/UnityEngine.TestRunner.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>
