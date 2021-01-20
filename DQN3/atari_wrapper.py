@@ -1,16 +1,4 @@
-# -*- coding: utf-8 -*- #
-"""*********************************************************************************************"""
-#   FileName     [ atari wrapper.py ]
-#   Synopsis     [ environment wrapper for atari ]
-#   Author       [ Ting-Wei Liu (Andi611) ]
-#   Copyright    [ Copyleft(c), NTUEE, NTU, Taiwan ]
-#   Reference    [ github.com/openai/baselines/blob/master/baselines/common/atari_wrappers.py ]
-"""*********************************************************************************************"""
 
-
-###############
-# IMPORTATION #
-###############
 import cv2
 import gym
 import numpy as np

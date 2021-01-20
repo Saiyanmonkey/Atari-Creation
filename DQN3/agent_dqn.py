@@ -1,15 +1,5 @@
-# -*- coding: utf-8 -*-
-"""*******************************************************************************"""
-#	FileName     [ agent_dqn.py ]
-#	Synopsis     [ Implementation of a Reinforcement Agent using Deep Q Network ]
-#	Author       [ Ting-Wei (Andy) Liu ]
-#	Copyright    [ Copyleft(c), NTUEE, NTU, Taiwan ]
-"""*******************************************************************************"""
 
 
-###############
-# IMPORTATION #
-###############
 import os
 import pickle
 import numpy as np
@@ -17,12 +7,10 @@ import tensorflow as tf
 tf.logging.set_verbosity(tf.logging.ERROR)
 
 
+
 class Agent_DQN(object):
 	def __init__(self, env, args):
-		######################
-		# INITIALIZING AGENT #
-		######################
-		
+
 		# general settings
 		tf.reset_default_graph()
 		self.env = env
@@ -32,9 +20,9 @@ class Agent_DQN(object):
 		self.double_q = True
 		self.n_actions = self.env.action_space.n
 		self.feature_shape = self.env.observation_space.shape
-		self.n_features = np.prod(np.array(self.feature_shape)) # n_features = 1 * 84 * 84 * 4 = 25767
+		self.n_features = np.prod(np.array(self.feature_shape))
 		self.memory_size = 10000
-		self.memory = np.zeros((self.memory_size, 3 + self.n_features*2)) # initialize zero memory [s, a, r, done, s_]
+		self.memory = np.zeros((self.memory_size, 3 + self.n_features*2))
 		self.reward_his = []
 
 		# training settings
@@ -47,7 +35,7 @@ class Agent_DQN(object):
 		self.batch_size = 32
 		self.epsilon_min = 0.07 # e_greedy percentage
 		self.epsilon = 1.0
-		self.epsilon_decrement = (self.epsilon - self.epsilon_min) / (1000000) # (x) -> x steps before epsilon reaches min
+		self.epsilon_decrement = (self.epsilon - self.epsilon_min) / (1000000)
 		self.optimizer = tf.train.RMSPropOptimizer(learning_rate=0.0001, decay=0.99)
 
 		# model
@@ -73,9 +61,7 @@ class Agent_DQN(object):
 
 
 	def get_path(self):
-		########################
-		# GET PATH FOR STORAGE #
-		########################
+
 		directory = './model'
 		try:
 			if not os.path.exists(directory):
@@ -88,12 +74,10 @@ class Agent_DQN(object):
 
 
 	def build_model(self):
-		########################
-		# BUILD DEEP Q NETWORK #
-		########################
+
 		# ------------------ all inputs ------------------ #
 		n_features_tensor = [None] + [dim for dim in self.feature_shape] # [None, 84, 84, 4]
-		#--eval net--#
+
 		self.s = tf.placeholder(tf.float32, n_features_tensor, name='s')  # input State
 		#--target net--#
 		self.s_ = tf.placeholder(tf.float32, n_features_tensor, name='s_')  # input Next State
@@ -208,28 +192,25 @@ class Agent_DQN(object):
 
 
 	def store_transition(self, s, a, r, d, s_):
-		#######################
-		# STORE REPLAY MEMORY #
-		#######################
+
 		if not hasattr(self, 'memory_counter'):
 			self.memory_counter = 0
 		transition = np.hstack((np.reshape(s, [-1]), [a, r, int(d)], np.reshape(s_, [-1]))) # stack arrays in sequence horizontally (column wise)
 		
-		index = self.memory_counter % self.memory_size # replace the old memory with new memory
+		index = self.memory_counter % self.memory_size
 		self.memory[index, :] = transition
 		self.memory_counter += 1
 
 
 	def learn(self):
-		######################
-		# LEARNING PROCEDURE #
-		######################
-		if self.memory_counter > self.memory_size: sample_index = np.random.choice(self.memory_size, size=self.batch_size, replace=False) # sample batch memory from all memory
-		else: sample_index = np.random.choice(self.memory_counter, size=self.batch_size)
+
+		if self.memory_counter > self.memory_size:
+			sample_index = np.random.choice(self.memory_size, size=self.batch_size, replace=False)
+		else:
+			sample_index = np.random.choice(self.memory_counter, size=self.batch_size)
 
 		batch_memory = self.memory[sample_index, :]
 		n_features_tensor = [self.batch_size] + [dim for dim in self.feature_shape] # [batch_size, 84, 84, 4]
-
 		#-----------------------------------------------------------------------------------#
 		states = np.reshape(batch_memory[:, :self.n_features], newshape=n_features_tensor)
 		actions = batch_memory[:, self.n_features].astype(int) # action batch
@@ -237,11 +218,9 @@ class Agent_DQN(object):
 		done = batch_memory[:, self.n_features + 2] # done batch
 		states_ = np.reshape(batch_memory[:, -self.n_features:], newshape=n_features_tensor)
 		#-----------------------------------------------------------------------------------#
-		
 		q_new, q_old = self.sess.run([self.q_new, self.q_old], feed_dict={ self.s: states, self.s_: states_ })
 		q_target = q_new.copy()
 		batch_index = np.arange(self.batch_size, dtype=np.int32) # [0, 1, 2, ... batch_size]
-
 		#--------------------------------#
 		if self.double_q:
 			q_new4next = self.sess.run(self.q_new, feed_dict={ self.s: states_ }) # next observation for double Q
@@ -250,7 +229,6 @@ class Agent_DQN(object):
 		else:
 			selected_q_old = np.max(q_old, axis=1)    # the natural DQN
 		#--------------------------------#
-
 		q_target[batch_index, actions] = rewards + (1-done) * self.gamma * selected_q_old # change q_target w.r.t q_new's action
 
 		_, loss = self.sess.run([self.train_op, self.loss], feed_dict={ self.s: states, self.q_target: q_target })
@@ -258,9 +236,7 @@ class Agent_DQN(object):
 
 
 	def train(self):
-		######################
-		# TRAINING ALGORITHM #
-		######################
+
 		episode = 0
 		step = 0
 		loss = 9.9999
@@ -317,9 +293,8 @@ class Agent_DQN(object):
 
 
 	def make_action(self, observation, test=True):
-		##################
-		# PREDICT ACTION #
-		##################
+
+
 		"""
 		Input:
 			observation: np.array
@@ -329,10 +304,10 @@ class Agent_DQN(object):
 			action: int
 				the predicted action from trained model
 		"""
-		observation = np.expand_dims(observation, axis=0) # to have batch dimension when feed into tf placeholder
+		observation = np.expand_dims(observation, axis=0)
 		if test: self.epsilon = 0.01
 		if (np.random.uniform() > self.epsilon):
-			actions_value = self.sess.run(self.q_new, feed_dict={self.s: observation}) # forward feed the observation and get q value for every actions
+			actions_value = self.sess.run(self.q_new, feed_dict={self.s: observation})
 			action = np.argmax(actions_value)
 		else:
 			action = np.random.randint(0, self.n_actions)
@@ -340,11 +315,10 @@ class Agent_DQN(object):
 
 
 	def plot(self):
-		##############################
-		# PLOT LEARNING REWARD CURVE #
-		##############################
+
 		import matplotlib.pyplot as plt
-		if np.sum(self.reward_his) == 0: self.reward_his = pickle.load(open(self.reward_his_path, 'rb'))
+		if np.sum(self.reward_his) == 0:
+			self.reward_his = pickle.load(open(self.reward_his_path, 'rb'))
 		avg_rwd = []
 		for i in range(len(self.reward_his)):
 			if i < 30:

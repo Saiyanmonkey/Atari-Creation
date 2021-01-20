@@ -1,15 +1,4 @@
-# -*- coding: utf-8 -*- #
-"""*********************************************************************************************"""
-#   FileName     [ environment.py ]
-#   Synopsis     [ environment wrapper for gym ]
-#   Author       [ Ting-Wei Liu (Andi611) ]
-#   Copyright    [ Copyleft(c), NTUEE, NTU, Taiwan ]
-"""*********************************************************************************************"""
 
-
-###############
-# IMPORTATION #
-###############
 import gym
 import numpy as np
 from atari_wrapper import make_wrap_atari
@@ -30,6 +19,7 @@ class Environment(object):
 
 		if args.video_dir:
 			self.env = gym.wrappers.Monitor(self.env, args.video_dir, force=True)
+
 
 	def seed(self, seed):
 		'''

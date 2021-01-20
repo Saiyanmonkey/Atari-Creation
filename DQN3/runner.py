@@ -1,18 +1,5 @@
-# -*- coding: utf-8 -*- #
-"""*********************************************************************************************"""
-#   FileName     [ runner.py ]
-#   Synopsis     [ main program that runs the training and testing of the DQN agent ]
-#   Author       [ Ting-Wei Liu (Andi611) ]
-#   Copyright    [ Copyleft(c), NTUEE, NTU, Taiwan ]
-#   Reference    [ URL ]
+
 import numpy as np
-
-"""*********************************************************************************************"""
-
-
-###############
-# IMPORTATION #
-###############
 import argparse
 import timeit
 from agent_dqn import Agent_DQN
@@ -26,9 +13,7 @@ seed = 11037
 def parse():
 	parser = argparse.ArgumentParser(description="runner")
 	parser.add_argument('--env_name', default=None, help='environment name')
-	parser.add_argument('--train_pg', action='store_true', help='whether train policy gradient')
 	parser.add_argument('--train_dqn', action='store_true', help='whether train DQN')
-	parser.add_argument('--test_pg', action='store_true', help='whether test policy gradient')
 	parser.add_argument('--test_dqn', action='store_true', help='whether test DQN')
 	parser.add_argument('--video_dir', default=None, help='output video directory')
 	parser.add_argument('--do_render', action='store_true', help='whether render environment')
@@ -52,26 +37,53 @@ def run(args):
 		test(agent, env)
 
 
-def test(agent, env, total_episodes=30):
+def test(agent, env, total_episodes=50):
 	rewards = []
+	score = 0.0
 	env.seed(seed)
+
 	for i in range(total_episodes):
 		state = env.reset()
 		done = False
-		episode_reward = 0.0
-
 		# playing one game
 		while not done:
 			action = agent.make_action(state, test=True)
-			state, reward, done, info = env.step(action)
-			episode_reward += reward
+			state, reward, done, info,  = env.step(action)
 
-		rewards.append(episode_reward)
+			if info['ale.lives']>0:
+				score+=reward
+
+		if info['ale.lives']==0:
+			print(score)
+			rewards.append(score)
+			score=0.0
+
+
+
 	stop_time = timeit.default_timer()
-	agent.plot()
-	print('Run %d episodes'%(total_episodes))
+	print('Run %d episodes'%(total_episodes/5))
 	print('Mean:', np.mean(rewards))
+	for i in range(len(rewards)):
+		print(i," Score ",rewards[i] )
+	print('Min: ',np.min(rewards))
+	print('Max: ',np.max(rewards))
 	print('Time: ', stop_time - start_time)
+	plot(rewards)
+
+def plot(rewards):
+	import matplotlib.pyplot as plt
+	avg_rwd = []
+	for i in range(len(rewards)):
+		#if i < 30:
+			avg_rwd.append(np.mean(rewards[:i+1]))
+		#else:
+			#avg_rwd.append(np.mean(rewards[i - 30:i]))
+	plt.plot(np.arange(len(avg_rwd)), avg_rwd)
+	plt.ylabel('Average Score Episodes')
+	plt.xlabel('Number of Games')
+	plt.show()
+
+
 
 
 if __name__ == '__main__':
